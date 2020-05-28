@@ -31,7 +31,7 @@ function fetchUserInfo(userId){
                 // </dl>
                 // `;
 
-                const view = escapeHTML`
+                const view = escapeHTMLtest`
                 <h4>${userInfo.name} (@${userInfo.login})</h4>
                 <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
                 <dl>
@@ -42,7 +42,7 @@ function fetchUserInfo(userId){
                 </dl>
                 `;
                 // console.log(viewb);
-                // console.log(view);
+                console.log(view);
                 const res = document.getElementById("result");
                 res.innerHTML = view;
             });
@@ -79,9 +79,15 @@ function escapeSpecialChars(str) {
         .replace(/'/g, "&#039;");
 }
 
-function escapeHTML(strings, ...values) {
+function escapeHTMLtest(strings, ...values) {
+    // console.log("strings")
+    // console.log(strings)
+    // console.log("values")
+    // console.log(values)
     return strings.reduce((result, str, i) => {
         const value = values[i - 1];
+        console.log(result)
+        console.log(str)
         if (typeof value === "string") {
             return result + escapeSpecialChars(value) + str;
         } else {
