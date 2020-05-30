@@ -42,7 +42,7 @@ function fetchUserInfo(userId){
                 </dl>
                 `;
                 // console.log(viewb);
-                console.log(view);
+                // console.log(view);
                 const res = document.getElementById("result");
                 res.innerHTML = view;
             });
@@ -86,8 +86,8 @@ function escapeHTMLtest(strings, ...values) {
     // console.log(values)
     return strings.reduce((result, str, i) => {
         const value = values[i - 1];
-        console.log(result)
-        console.log(str)
+        // console.log(result)
+        // console.log(str)
         if (typeof value === "string") {
             return result + escapeSpecialChars(value) + str;
         } else {
@@ -95,3 +95,9 @@ function escapeHTMLtest(strings, ...values) {
         }
     });  
 }
+
+function openYouTube(){
+    window.open('https://www.youtube.com/feed/trending', '_blank');
+}
+
+console.log("Start!");
