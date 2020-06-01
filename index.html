@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
-  <body>
+  <body onload="startVideo()">
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
     <div id="player"></div>
+
+    <div>
+      <button onclick="aaa()">test</button>
+    </div>
 
     <script>
       // 2. This code loads the IFrame Player API code asynchronously.
@@ -27,9 +31,24 @@
         });
       }
 
+      let ev;
+
       // 4. The API will call this function when the video player is ready.
       function onPlayerReady(event) {
-        event.target.playVideo();
+        console.log(player);
+        ev = event;
+        // setTimeout(startVideo(event), 5000);
+        // event.target.playVideo();
+      }
+
+      function startVideo(){
+        console.log("movie start");
+        setTimeout(aaa(), 5000);
+      }
+
+      function aaa(){
+        console.log("aaa");
+        player.playVideo();
       }
 
       // 5. The API calls this function when the player's state changes.
@@ -37,14 +56,14 @@
       //    the player should play for six seconds and then stop.
       var done = false;
       function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING && !done) {
-          setTimeout(stopVideo, 6000);
-          done = true;
-        }
+        // if (event.data == YT.PlayerState.PLAYING && !done) {
+        //   setTimeout(stopVideo, 6000);
+        //   done = true;
+        // }
       }
-      function stopVideo() {
-        player.stopVideo();
-      }
+      // function stopVideo() {
+      //   player.stopVideo();
+      // }
     </script>
   </body>
 </html>
