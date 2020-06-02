@@ -10,6 +10,10 @@ const button = document.createElement("button");
 button.textContent = "Push Me";
 document.body.appendChild(button);
 
+function main(){
+    fetchUserInfo('nananakano000');
+}
+
 function fetchUserInfo(userId){
     fetch(`https://api.github.com/users/${encodeURIComponent(userId)}`)
     .then(response => {
@@ -18,38 +22,31 @@ function fetchUserInfo(userId){
             console.error("エラーレスポンス", response);
         }else{
             return response.json().then(userInfo => {
-                // console.log(userInfo);
-
-                // const viewb = `
-                // <h4>${userInfo.name} (@${userInfo.login})</h4>
-                // <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
-                // <dl>
-                //     <dt>Location</dt>
-                //     <dd>${userInfo.location}</dd>
-                //     <dt>Repositories</dt>
-                //     <dd>${userInfo.public_repos}</dd>
-                // </dl>
-                // `;
-
-                const view = escapeHTMLtest`
-                <h4>${userInfo.name} (@${userInfo.login})</h4>
-                <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
-                <dl>
-                    <dt>Location</dt>
-                    <dd>${userInfo.location}</dd>
-                    <dt>Repositories</dt>
-                    <dd>${userInfo.public_repos}</dd>
-                </dl>
-                `;
-                // console.log(viewb);
-                // console.log(view);
-                const res = document.getElementById("result");
-                res.innerHTML = view;
+                const view = createView(userInfo);
+                displayView(view);
             });
         }
     }).catch(error => {
         console.error(error);
     });
+}
+
+function createView(userInfo){
+    return escapeHTML`
+    <h4>${userInfo.name} (@${userInfo.login})</h4>
+    <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
+    <dl>
+        <dt>Location</dt>
+        <dd>${userInfo.location}</dd>
+        <dt>Repositories</dt>
+        <dd>${userInfo.public_repos}</dd>
+    </dl>
+    `;
+}
+
+function displayView(view){
+    const res = document.getElementById("result");
+    res.innerHTML = view;
 }
 
 function fetchUserInfoByXHR(userId){
@@ -79,7 +76,7 @@ function escapeSpecialChars(str) {
         .replace(/'/g, "&#039;");
 }
 
-function escapeHTMLtest(strings, ...values) {
+function escapeHTML(strings, ...values) {
     // console.log("strings")
     // console.log(strings)
     // console.log("values")
