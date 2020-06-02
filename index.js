@@ -1,5 +1,4 @@
 // import { response } from "express";
-
 console.log("index.js: loaded");
 
 const heading = document.querySelector("h2");
@@ -10,28 +9,42 @@ const button = document.createElement("button");
 button.textContent = "Push Me";
 document.body.appendChild(button);
 
-function main(){
-    fetchUserInfo('nananakano000');
+async function main(){
+    // fetchUserInfo('nananakano000')
+    //     .then((userInfo) => createView(userInfo))
+    //     .then((view) => displayView(view))
+    //     .catch((error) => {
+    //         console.error("エラーレスポンス(main())", error);
+    //     });
+    try {
+        const userInfo = await fetchUserInfo(getUserId());
+        const view = createView(userInfo);
+        displayView(view);
+    } catch (error) {
+        console.error(`エラーが発生しました(${error})`);
+    }
 }
 
 function fetchUserInfo(userId){
-    fetch(`https://api.github.com/users/${encodeURIComponent(userId)}`)
+    return fetch(`https://api.github.com/users/${encodeURIComponent(userId)}`)
     .then(response => {
         console.log(response.status);
         if(!response.ok){
-            console.error("エラーレスポンス", response);
+            console.error("エラーレスポンス(fetchUserInfo())", response);
+            return Promise.reject(new Error(`${response.status} : ${response.statusText}`));
+
         }else{
-            return response.json().then(userInfo => {
-                const view = createView(userInfo);
-                displayView(view);
-            });
+            return response.json();
         }
-    }).catch(error => {
-        console.error(error);
     });
 }
 
-function createView(userInfo){
+function getUserId() {
+    const value = document.getElementById("userId").value;
+    return encodeURIComponent(value);
+}
+
+function createView(userInfo) {
     return escapeHTML`
     <h4>${userInfo.name} (@${userInfo.login})</h4>
     <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
@@ -44,9 +57,29 @@ function createView(userInfo){
     `;
 }
 
-function displayView(view){
-    const res = document.getElementById("result");
-    res.innerHTML = view;
+function displayView(view) {
+    const result = document.getElementById("result");
+    result.innerHTML = view;
+}
+
+function escapeSpecialChars(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function escapeHTML(strings, ...values) {
+    return strings.reduce((result, str, i) => {
+        const value = values[i - 1];
+        if (typeof value === "string") {
+            return result + escapeSpecialChars(value) + str;
+        } else {
+            return result + String(value) + str;
+        }
+    });
 }
 
 function fetchUserInfoByXHR(userId){
@@ -65,32 +98,6 @@ function fetchUserInfoByXHR(userId){
     });
 
     req.send();
-}
-
-function escapeSpecialChars(str) {
-    return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-function escapeHTML(strings, ...values) {
-    // console.log("strings")
-    // console.log(strings)
-    // console.log("values")
-    // console.log(values)
-    return strings.reduce((result, str, i) => {
-        const value = values[i - 1];
-        // console.log(result)
-        // console.log(str)
-        if (typeof value === "string") {
-            return result + escapeSpecialChars(value) + str;
-        } else {
-            return result + String(value) + str;
-        }
-    });  
 }
 
 function openYouTube(){
